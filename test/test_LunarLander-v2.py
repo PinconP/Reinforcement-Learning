@@ -3,6 +3,7 @@ import gymnasium as gym
 from stable_baselines3 import PPO
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.monitor import Monitor
+import os
 
 
 class TestReinforcementLearning(unittest.TestCase):
@@ -36,6 +37,10 @@ class TestReinforcementLearning(unittest.TestCase):
         model.save(model_name)
         loaded_model = PPO.load(model_name)
         self.assertIsNotNone(loaded_model, "Failed to load the saved model")
+
+        # Supprimer le fichier de modèle après le test
+        if os.path.exists(model_name + ".zip"):
+            os.remove(model_name + ".zip")
 
     def test_model_evaluation(self):
         """Test if the model can be evaluated."""
