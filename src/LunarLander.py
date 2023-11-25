@@ -21,12 +21,7 @@ model = PPO(
     verbose=1)
 
 # Train it for 1,000,000 timesteps
-model.learn(total_timesteps=100000)
+model.learn(total_timesteps=1000000)
 # Save the model
 model_name = "./models/ppo-LunarLander-v2"
 model.save(model_name)
-
-eval_env = Monitor(gym.make("LunarLander-v2"))
-mean_reward, std_reward = evaluate_policy(
-    model, eval_env, n_eval_episodes=10, deterministic=True)
-print(f"mean_reward={mean_reward:.2f} +/- {std_reward}")
