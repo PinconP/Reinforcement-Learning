@@ -9,25 +9,25 @@ from stable_baselines3.common.monitor import Monitor
 import os  # Pour les opérations liées au système de fichiers
 
 
-class TestReinforcementLearning(unittest.TestCase):
+class TestPPO(unittest.TestCase):
     # Classe de test pour les fonctionnalités de RL
 
     def test_environment_creation(self):
-        """Test si l'environnement LunarLander-v2 est créé."""
-        env = gym.make('LunarLander-v2')  # Création de l'environnement
+        """Test si l'environnement "CartPole-v1" est créé."""
+        env = gym.make("CartPole-v1")  # Création de l'environnement
         self.assertIsNotNone(
-            env, "Failed to create LunarLander-v2 environment")
+            env, "Failed to create CartPole-v1 environment")
 
     def test_model_definition(self):
         """Test si le modèle PPO est défini avec les bons paramètres."""
-        env = gym.make('LunarLander-v2')
+        env = gym.make("CartPole-v1")
         # Définition du modèle PPO
         model = PPO(policy='MlpPolicy', env=env, verbose=1)
         self.assertIsNotNone(model, "Failed to define PPO model")
 
     def test_model_learning(self):
         """Test si le modèle peut commencer à apprendre."""
-        env = gym.make('LunarLander-v2')
+        env = gym.make("CartPole-v1")
         model = PPO(policy='MlpPolicy', env=env, verbose=1)
         try:
             # Tentative d'apprentissage du modèle
@@ -37,9 +37,9 @@ class TestReinforcementLearning(unittest.TestCase):
 
     def test_model_save_and_load(self):
         """Test si le modèle peut être sauvegardé et chargé."""
-        env = gym.make('LunarLander-v2')
+        env = gym.make("CartPole-v1")
         model = PPO(policy='MlpPolicy', env=env, verbose=1)
-        model_name = "test_ppo_LunarLander"
+        model_name = "test_ppo"
         model.save(model_name)  # Sauvegarde du modèle
         loaded_model = PPO.load(model_name)  # Chargement du modèle
         self.assertIsNotNone(loaded_model, "Failed to load the saved model")
@@ -50,10 +50,10 @@ class TestReinforcementLearning(unittest.TestCase):
 
     def test_model_evaluation(self):
         """Test si le modèle peut être évalué."""
-        env = gym.make('LunarLander-v2')
+        env = gym.make("CartPole-v1")
         model = PPO(policy='MlpPolicy', env=env, verbose=1)
         # Création d'un environnement pour l'évaluation
-        eval_env = Monitor(gym.make("LunarLander-v2"))
+        eval_env = Monitor(gym.make("CartPole-v1"))
         try:
             mean_reward, std_reward = evaluate_policy(
                 model, eval_env, n_eval_episodes=10, deterministic=True)  # Évaluation du modèle

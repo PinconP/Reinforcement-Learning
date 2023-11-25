@@ -5,14 +5,18 @@ import cv2  # Pour l'affichage
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.evaluation import evaluate_policy
 
+# Name of the environment to be used
+env_name = "CartPole-v1"
+
 # Charger l'environnement vectorisé
-env = make_vec_env("LunarLander-v2", n_envs=1)
+env = make_vec_env(env_name, n_envs=1)
 
 # Charger le modèle entraîné
-model_name = "models/ppo-LunarLander/best_model"
+model_name = "models/ppo/best_model"
 model = PPO.load(model_name)
 
-eval_env = Monitor(gym.make("LunarLander-v2"))
+
+eval_env = Monitor(gym.make(env_name))
 mean_reward, std_reward = evaluate_policy(
     model, eval_env, n_eval_episodes=10, deterministic=True
 )
