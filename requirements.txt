@@ -1,4 +1,3 @@
-torch==2.1.1+cu122
 numpy == 1.26.2
 gymnasium == 0.29.1
 stable_baselines3 == 2.2.1
