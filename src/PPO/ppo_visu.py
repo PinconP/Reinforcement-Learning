@@ -6,7 +6,7 @@ from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.evaluation import evaluate_policy
 
 # Name of the environment to be used
-env_name = "CartPole-v1"
+env_name = "LunarLander-v2"
 
 # Charger l'environnement vectorisé
 env = make_vec_env(env_name, n_envs=1)

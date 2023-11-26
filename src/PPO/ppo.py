@@ -13,10 +13,10 @@ from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.callbacks import EvalCallback
 
 # Name of the environment to be used
-env_name = "CartPole-v1"
+env_name = "LunarLander-v2"
 
 # Create environment using the specified name
-env = gym.make(env_name)
+env = make_vec_env(env_name, n_envs=16)
 
 # Create multiple instances of the environment for evaluation
 eval_envs = make_vec_env(env_name, n_envs=5)
@@ -32,9 +32,9 @@ eval_callback = EvalCallback(
     # Best model save path: Directory where the best model will be saved.
     # "Best" is determined based on the performance in the evaluation environments.
 
-    eval_freq=100,
+    eval_freq=50000,
     # Evaluation frequency: Determines how often the evaluation should be done.
-    # In this case, it's set to 100, meaning evaluation at the end of each 100 training step.
+    # In this case, it's set to 50000, meaning evaluation at the end of each 50000 training step.
 
     n_eval_episodes=10,
     # Number of evaluation episodes: Number of episodes to run for each evaluation.
@@ -50,17 +50,16 @@ eval_callback = EvalCallback(
 
 # Define the PPO model with specific parameters and policy (Values are from the optimization study with Optuna)
 model = PPO(
-    learning_rate=0.02378371641454062,  # Learning rate
     policy='MlpPolicy',  # Using a Multi-layer Perceptron policy
     env=env,  # The training environment
-    n_steps=2048,  # Number of steps to run for each environment per update
-    batch_size=256,  # Size of the batch for learning the policy
+    n_steps=1024,  # Number of steps to run for each environment per update
+    batch_size=64,  # Size of the batch for learning the policy
     n_epochs=4,  # Number of epochs when optimizing the surrogate loss
-    gamma=0.9897624181166036,  # Discount factor
+    gamma=0.999,  # Discount factor
     # Factor for trade-off in Generalized Advantage Estimator
-    gae_lambda=0.9537486585331219,
-    ent_coef=0.06180943774320096,  # Entropy coefficient for exploration
-    verbose=0  # Verbose mode (0: no output, 1: training info)
+    gae_lambda=0.98,
+    ent_coef=0.01,  # Entropy coefficient for exploration
+    verbose=1  # Verbose mode (0: no output, 1: training info)
 )
 
 # Start training the agent
