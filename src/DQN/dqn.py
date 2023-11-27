@@ -1,4 +1,5 @@
 # Importing the gymnasium library to access reinforcement learning environments
+from stable_baselines3 import PPO
 import gymnasium as gym
 
 # Importing the DQN algorithm from Stable Baselines3
@@ -13,26 +14,45 @@ from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.callbacks import EvalCallback
 
 # Name of the environment to be used
-env_name = "LunarLander-v2"
+env_name = "Acrobot-v1"
 
 # Create environment using the specified name
-env = gym.make(env_name)
+env = make_vec_env(env_name, n_envs=16)
+
+# Create multiple instances of the environment for evaluation
+eval_envs = make_vec_env(env_name, n_envs=5)
 
 # Callback for evaluating the agent periodically
 # Saves the best model and monitors performance during training
 eval_callback = EvalCallback(
-    eval_env=env,  # Single environment for evaluation
+    # Evaluation environments: Environments used for evaluating the agent.
+    eval_envs,
+    # In this case, it's multiple instances of the environment "env_name".
+
     best_model_save_path="./models/dqn",
-    eval_freq=100,  # Evaluation frequency
-    n_eval_episodes=5,  # Number of evaluation episodes
+    # Best model save path: Directory where the best model will be saved.
+    # "Best" is determined based on the performance in the evaluation environments.
+
+    eval_freq=50000,
+    # Evaluation frequency: Determines how often the evaluation should be done.
+    # In this case, it's set to 50000, meaning evaluation at the end of each 50000 training step.
+
+    n_eval_episodes=10,
+    # Number of evaluation episodes: Number of episodes to run for each evaluation.
+    # Here, it means the agent will be evaluated over 10 episodes each time.
+
     verbose=1,
+    # Verbose: Verbosity level (0: no output, 1: info, 2: debug).
+
+    # Note: There are other parameters available in EvalCallback not used that could be interesting:
+    # render: If True, the environments will be rendered during evaluation.
 )
+
 
 # Define the DQN model with specific parameters
 model = DQN(
     policy='MlpPolicy',  # Using a Multi-layer Perceptron policy
     env=env,  # The training environment
-    learning_rate=0.06771124091067092,  # Learning rate
     buffer_size=100000,  # Size of the replay buffer
     learning_starts=1000,  # Number of steps before learning starts
     batch_size=256,  # Size of the batch for learning the policy
@@ -47,7 +67,7 @@ model = DQN(
 
 # Start training the agent
 try:
-    # Train for a total of 1,000,000 timesteps
-    model.learn(total_timesteps=1000000, callback=eval_callback)
+    # Train for a total of 5 million timesteps
+    model.learn(total_timesteps=int(5e6), callback=eval_callback)
 except KeyboardInterrupt:
     pass  # Allows the training to be stopped manually

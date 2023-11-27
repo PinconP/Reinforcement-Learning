@@ -7,7 +7,7 @@ from stable_baselines3.common.callbacks import EvalCallback
 import optuna
 
 # Name of the environment to be used
-env_name = "LunarLander-v2"
+env_name = "Acrobot-v1"
 env = gym.make(env_name)
 eval_envs = make_vec_env(env_name, n_envs=5)
 
