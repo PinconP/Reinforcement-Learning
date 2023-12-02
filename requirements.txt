@@ -2,3 +2,6 @@ numpy == 1.26.2
 gymnasium == 0.29.1
 stable_baselines3 == 2.2.1
 gymnasium[box2d]
+rl_zoo3==2.0.0a9
+gymnasium[atari]
+gymnasium[accept-rom-license]
