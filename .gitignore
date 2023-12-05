@@ -1,3 +1,4 @@
 .venv
 *.pyc
 experimentations.py
+*study_results*.csv
