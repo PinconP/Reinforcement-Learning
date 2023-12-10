@@ -2,3 +2,4 @@
 *.pyc
 experimentations.py
 *study_results*.csv
+.coverage
