@@ -13,5 +13,20 @@ jobs:
           pip install -U pip
           pip install torch==2.1.1+cu121 -f https://download.pytorch.org/whl/torch_stable.html
       - name: Install dependencies
-        run: pip install -r requirements.txt
-      - run: python -m unittest discover -v -s tests
+        run: pip install -r requirements.txt coverage
+      - name: Run unittests with coverage
+        run: |
+          coverage run -m unittest discover -v -s test
+
+      - name: Generate coverage report
+        run: |
+          coverage xml
+          coverage report
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          # Token is required for private repositories
+          file: ./coverage.xml # path to coverage report
+          flags: unittests # optional
+          name: codecov-umbrella # optional
