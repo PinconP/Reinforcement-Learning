@@ -1,6 +1,7 @@
 before_install:
   - sudo apt-get update
   - sudo apt-get install swig
+  - sudo apt-get install -y openssl libssl-dev
 
 language: python
 python:
