@@ -4,7 +4,7 @@
 ![GitHub language count](https://img.shields.io/github/languages/count/PinconP/Reinforcement-Learning)
 ![GitHub last commit](https://img.shields.io/github/last-commit/PinconP/Reinforcement-Learning)
 ![Codecov](https://img.shields.io/codecov/c/github/PinconP/Reinforcement-Learning)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/6d6b3dda03a7462da8d6054a633f69f2)](https://app.codacy.com/gh/PinconP/Reinforcement-Learning/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/e796b8663c1b41599506b6ae51201a1a)](https://app.codacy.com/gh/PinconP/Reinforcement-Learning/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
 ## Introduction
 
