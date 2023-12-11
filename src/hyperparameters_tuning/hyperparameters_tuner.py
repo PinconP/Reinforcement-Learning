@@ -13,7 +13,7 @@ from optuna.visualization import plot_optimization_history, plot_param_importanc
 from params_sampler import *
 from rl_zoo3.hyperparams_opt import HYPERPARAMS_SAMPLER
 from rl_zoo3.utils import ALGOS, get_callback_list
-from stable_baselines3 import A2C, HerReplayBuffer
+from stable_baselines3 import DQN, HerReplayBuffer
 from stable_baselines3.common.callbacks import BaseCallback, EvalCallback
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.vec_env import (
@@ -32,9 +32,9 @@ N_TIMESTEPS = int(2e4)  # Training budget
 EVAL_FREQ = int(N_TIMESTEPS / N_EVALUATIONS)
 N_EVAL_ENVS = 5
 N_EVAL_EPISODES = 10
-TIMEOUT = int(60 * 60)  # 15 minutes
+TIMEOUT = int(60 * 60)  # 60 minutes
 
-ENV_ID = "BipedalWalkerHardcore-v3"
+ENV_ID = "Acrobot-v1"
 
 DEFAULT_HYPERPARAMS = {
     "policy": "MlpPolicy",
@@ -96,11 +96,18 @@ def objective(trial: optuna.Trial) -> float:
 
     kwargs = DEFAULT_HYPERPARAMS.copy()
 
+    additional_args = {}
+    additional_args["using_her_replay_buffer"] = False
+
     # Sample hyperparameters and update the keyword arguments
-    kwargs.update(sample_a2c_params(trial, n_actions=0, n_envs=0, additional_args=0))
+    kwargs.update(
+        sample_dqn_params(
+            trial, n_actions=None, n_envs=None, additional_args=additional_args
+        )
+    )
 
     # Create the RL model
-    model = A2C(**kwargs)
+    model = DQN(**kwargs)
 
     # Create environments used for evaluation
     eval_envs = make_vec_env(ENV_ID, n_envs=N_EVAL_ENVS)
@@ -177,14 +184,14 @@ for key, value in trial.params.items():
     best_params[key] = value
 
 # Write the best parameters to a YAML file
-write_params_to_yaml(best_params, "src/A2C/best_trial_params.yml")
+write_params_to_yaml(best_params, "src/DQN/best_trial_params.yml")
 
 print("  User attrs:")
 for key, value in trial.user_attrs.items():
     print(f"    {key}: {value}")
 
 # Write report
-study.trials_dataframe().to_csv("src/A2C/study_results_BipedalWalkerHardcore-v3.csv")
+study.trials_dataframe().to_csv("src/DQN/study_results_Acrobot-v1.csv")
 
 fig1 = plot_optimization_history(study)
 fig2 = plot_param_importances(study)
