@@ -1,6 +1,15 @@
 # Importing the gymnasium library to access reinforcement learning environments
 import gymnasium as gym
 
+# Importing the YAML library to load the hyperparameters
+import yaml
+
+# Importing PyTorch library
+import torch as th
+
+# Importing the neural network module conversion for YAML
+from src.hyperparameters_tuning.get_activation_function import get_activation_function
+
 # Importing the A2C algorithm from Stable Baselines3
 from stable_baselines3 import A2C
 
@@ -46,26 +55,45 @@ eval_callback = EvalCallback(
     # render: If True, the environments will be rendered during evaluation.
 )
 
+# Load parameters from YAML file
+with open("src/A2C/best_trial_params.yml", "r") as file:
+    params = yaml.safe_load(file)
 
+# Configure the network architecture based on the parameter
+if params["net_arch"] == "small":
+    net_arch = [dict(pi=[64, 64], vf=[64, 64])]
+else:
+    net_arch = [dict(pi=[128, 128], vf=[128, 128])]
+
+# Define the policy_kwargs with net_arch and potentially other parameters
+policy_kwargs = {
+    "net_arch": net_arch,
+    "activation_fn": get_activation_function(
+        params["activation_fn"]
+    ),  # Ensure this is mapped correctly to a torch.nn module
+    "ortho_init": params["ortho_init"],
+    # Add other policy-specific parameters if needed
+}
 # Define the A2C model with specific parameters
 model = A2C(
-    policy="MlpPolicy",  # Using a Multi-layer Perceptron policy
-    env=env,  # The training environment
-    buffer_size=100000,  # Size of the replay buffer
-    learning_starts=1000,  # Number of steps before learning starts
-    batch_size=256,  # Size of the batch for learning the policy
-    # The soft update coefficient (tau) for updating the target network
-    tau=0.6603913103837233,
-    gamma=0.935566138348333,  # Discount factor
-    train_freq=5,  # Update the model every 5 steps
-    gradient_steps=5,  # How many gradient steps to do after each rollout
-    optimize_memory_usage=False,  # Optimize memory usage
-    verbose=0,  # Verbose mode
+    "MlpPolicy",
+    env=env,
+    verbose=0,
+    ent_coef=params["ent_coef"],
+    gae_lambda=params["gae_lambda"],
+    gamma=params["gamma"],
+    learning_rate=params["learning_rate"],
+    max_grad_norm=params["max_grad_norm"],
+    n_steps=params["n_steps"],
+    normalize_advantage=params["normalize_advantage"],
+    use_rms_prop=params["use_rms_prop"],
+    vf_coef=params["vf_coef"],
+    policy_kwargs=policy_kwargs,
 )
 
 # Start training the agent
 try:
     # Train for a total of 5 million timesteps
-    model.learn(total_timesteps=int(5e6), callback=eval_callback)
+    model.learn(total_timesteps=int(5e9), callback=eval_callback)
 except KeyboardInterrupt:
     pass  # Allows the training to be stopped manually
